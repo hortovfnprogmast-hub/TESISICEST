@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Portal Educativo - ICES</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#005B9A", 
+                        "primary-dark": "#004575",
+                        "ice-blue": "#007bc4",
+                    }
+                },
+            },
+        };
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #007bc4;
+            margin: 0;
+        }
+        .login-card {
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            border-radius: 24px;
+        }
+    </style>
+</head>
+<body class="antialiased flex flex-col items-center justify-center min-h-screen p-4">
+
+    <div class="w-full max-w-[400px] flex flex-col items-center">
+        
+        <div class="w-full bg-white login-card overflow-hidden">
+            <div class="p-6 sm:p-8">
+                <div class="flex flex-col items-center mb-6">
+                    <img src="https://i.ibb.co/C3wh0NmV/hq720.jpg" alt="Logo ICEST" class="h-20 mb-3 object-contain"> 
+                    <h1 class="text-2xl font-bold text-[#1a2b4b]">Bienvenido</h1>
+                    <p class="text-slate-500 text-sm mt-1 text-center">Portal de Educación Profesional</p>
+                </div>
+                
+                <form id="loginForm" class="space-y-4">
+                    <div class="space-y-1">
+                        <label class="text-xs font-semibold text-slate-700 ml-1">Usuario</label>
+                        <div class="relative group">
+                            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">person</span>
+                            <input required id="username" placeholder="ID" type="text"
+                                class="block w-full pl-12 pr-4 py-3 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all">
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-1">
+                        <label class="text-xs font-semibold text-slate-700 ml-1">Contraseña</label>
+                        <div class="relative group">
+                            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">lock</span>
+                            <input required id="password" placeholder="••••••••" type="password"
+                                class="block w-full pl-12 pr-12 py-3 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all">
+                            <button type="button" onclick="togglePassword()" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-primary transition-colors">
+                                <span class="material-symbols-outlined" id="toggleIcon">visibility_off</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-end pt-1">
+                        <a class="text-xs font-semibold text-primary hover:underline" href="#">¿Olvidaste tu contraseña?</a>
+                    </div>
+
+                    <div id="alertMessage" class="hidden py-2 px-4 bg-red-50 border border-red-100 text-red-600 text-sm font-medium rounded-xl text-center">
+                        ID o contraseña incorrectos
+                    </div>
+                    
+                    <button id="submitBtn" type="submit"
+                        class="w-full py-3 px-4 mt-2 rounded-xl text-white text-base font-bold bg-primary hover:bg-primary-dark transition-all active:scale-[0.98] shadow-lg shadow-primary/20">
+                        Iniciar Sesión
+                    </button>
+                </form>
+                
+                <div class="mt-6 pt-4 border-t border-slate-100 text-center">
+                    <p class="text-xs text-slate-500">
+                        ¿Necesitas ayuda? 
+                        <a class="font-bold text-primary hover:underline ml-1" href="#">Contactar Soporte</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="w-full text-center mt-4">
+            <p class="text-[10px] font-bold tracking-[0.1em] text-white/90 uppercase">
+                © 2026 ICEST MÉXICO. TODOS LOS DERECHOS RESERVADOS.
+            </p>
+        </div>
+
+    </div>
+
+    <script>
+        function togglePassword() {
+            const pass = document.getElementById('password');
+            const icon = document.getElementById('toggleIcon');
+            if (pass.type === 'password') {
+                pass.type = 'text';
+                icon.textContent = 'visibility';
+            } else {
+                pass.type = 'password';
+                icon.textContent = 'visibility_off';
+            }
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const btn = document.getElementById('submitBtn');
+            const alert = document.getElementById('alertMessage');
+            
+            const user = document.getElementById('username').value.trim();
+            const pass = document.getElementById('password').value.trim();
+
+            alert.classList.add('hidden');
+            btn.innerText = 'Verificando...';
+            btn.disabled = true;
+
+            // URL proporcionada
+            const urlGAS = "https://script.google.com/macros/s/AKfycbzKt5qEd2eXYqKt9hLlNNxN7_LEKJVmShW1mD6ogZrNDC02hqSQBZdTHrzd-i_HfKs/exec";
+
+            try {
+                // SOLUCIÓN: Cambiamos a POST y enviamos el JSON que tu Apps Script está esperando
+                const respuesta = await fetch(urlGAS, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        username: user,
+                        password: pass
+                    })
+                });
+
+                // Leemos la respuesta como texto
+                const texto = await respuesta.text();
+
+                try {
+                    const datos = JSON.parse(texto);
+                    if (datos.acceso === true) {
+                        window.location.href = 'menu.html';
+                    } else {
+                        alert.innerText = "ID o contraseña incorrectos";
+                        alert.classList.remove('hidden');
+                        resetBtn();
+                    }
+                } catch (parseError) {
+                    console.error("Respuesta inesperada del servidor:", texto);
+                    alert.innerText = "Error en el servidor. Intente nuevamente.";
+                    alert.classList.remove('hidden');
+                    resetBtn();
+                }
+
+            } catch (error) {
+                console.error("Detalle del error:", error);
+                alert.innerText = "Error de red. Verifique su conexión.";
+                alert.classList.remove('hidden');
+                resetBtn();
+            }
+
+            function resetBtn() {
+                btn.innerText = 'Iniciar Sesión';
+                btn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
